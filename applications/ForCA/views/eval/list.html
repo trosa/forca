@@ -1,0 +1,185 @@
+{{if len(evals):}}
+
+    {{if 'submit' in request.vars:}}
+        {{del request.vars['submit']}}
+    {{pass}}
+
+    {{if page:}}
+        <a style="float:left" href="{{=URL(args=[page-1], vars=request.vars)}}">{{=T('<anterior')}}</a>
+    {{pass}}
+
+    {{if len(evals) > per_page:}}
+        <a style="float:right" href="{{=URL(args=[page+1], vars=request.vars)}}">{{=T('próxima>')}}</a>
+    {{pass}}
+
+    <br/>
+
+    {{for i, eval in enumerate(evals):}}
+        {{if  eval['anonimo']:}}
+            {{if 'aluno_id' in request.vars and perfil_proprio == False: continue}}
+        {{pass}}
+        {{if eval['prof_blocked']: continue}}
+        {{if i==per_page: break}}
+            <div class='grade{{=eval['grade']}}'>
+                <table>
+                    <tr>
+                        <td rowspan='4'>
+                            <span style="font-size:smaller; color: grey;">
+                                {{=eval['timestamp_eval'].day}}/{{=eval['timestamp_eval'].month}}/{{=str(eval['timestamp_eval'].year)[-2:]}}
+                            </span>
+                            <div style='font-size:xx-large'>
+                                <b>{{=eval['grade']}}</b><br/>
+                            </div>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    {{if not eval['anonimo']:}}
+                                        {{if 'aluno_id' in request.vars and request.function != 'filter':}}
+                                            {{if eval['aluno_id'] == int(request.vars['aluno_id']):}}
+                                                {{=B(eval['aluno_short_name'])}}
+                                            {{else:}}
+                                                {{=B(A(eval['aluno_name'], _href=URL(request.application, 'profile', 
+                                                'home', vars=dict(aluno_id=eval['aluno_id']))))}}
+                                            {{pass}}
+                                        {{else:}}
+                                            {{=B(A(eval['aluno_name'], _href=URL(request.application, 'profile', 
+                                            'home', vars=dict(aluno_id=eval['aluno_id']))))}}
+                                        {{pass}}
+                                    {{else:}}
+                                        {{=B(T('Anônimo'))}}
+                                    {{pass}}
+                                    sobre
+                                    {{if 'prof_id' in request.vars and request.function != 'filter':}}
+                                        {{=B(eval['prof_short_name'])}}
+                                    {{else:}}
+                                        {{=B(A(eval['prof_name'], _href=URL(request.application, 'prof', 'home',
+                                        vars=dict(prof_id=eval['prof_id']))))}}
+                                    {{pass}}
+                                    por
+                                    {{if 'disc_id' in request.vars and request.function != 'filter':}}
+                                        {{=B(eval['disc_short_name'])}}
+                                    {{else:}}
+                                        {{=B(A(eval['disc_name'], _href=URL(request.application, 'disc',
+                                        'home', vars=dict(disc_id=eval['disc_id']))))}}
+                                    {{pass}}
+                                    {{if 'semester' in eval:}}
+                                        em
+                                        {{=B(eval['semester'])}}
+                                    {{pass}}
+                                    :
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i>{{=eval['comment'] or T('sem comentário')}}</i><br />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <div style='float:right'>
+                        <b>
+                            {{if not has_karmed(get_aluno_id(), eval['id']) and get_aluno_id() and get_aluno_id()!=eval['aluno_id']:}}
+                                <form>
+                                    <input type="hidden" id="karma{{=eval['id']}}"/>
+                                </form>
+                                <span id="plus{{=eval['id']}}" style="float:right; cursor:hand; cursor:pointer" 
+                                    onclick="ajax('{{=URL(request.application, 'karma', 'up', vars=dict(eval_id=eval['id']))}}', 
+                                    ['karma{{=eval['id']}}'], 'karma_count{{=eval['id']}}');
+                                    jQuery('#plus{{=eval['id']}}').fadeOut();
+                                    jQuery('#minus{{=eval['id']}}').fadeOut();
+                                    jQuery('#karma_count{{=eval['id']}}').removeClass().addClass('{{=get_karma_class(eval['id'],1)}}');">
+                                    {{=IMG(_src=URL('static', 'thumb-up.png'), _title=T('Qualificar positivamente'))}}
+                                </span>
+
+                                <span style="float:right" id="karma_count{{=eval['id']}}" 
+                                    class="karma-{{='plus' if eval['karma'] > 0 else 'minus' if eval['karma'] < 0 else 'zero'}}">{{=eval['karma']}}
+                                </span>
+
+                                <span id="minus{{=eval['id']}}" style="float:right; cursor:hand; cursor:pointer" 
+                                    onclick="ajax('{{=URL(request.application, 'karma', 'down', vars=dict(eval_id=eval['id']))}}', 
+                                    ['karma{{=eval['id']}}'], 'karma_count{{=eval['id']}}');
+                                    jQuery('#plus{{=eval['id']}}').fadeOut();
+                                    jQuery('#minus{{=eval['id']}}').fadeOut();
+                                    jQuery('#karma_count{{=eval['id']}}').removeClass().addClass('{{=get_karma_class(eval['id'],-1)}}');">
+                                    {{=IMG(_src=URL('static', 'thumb-down.png'), _title=T('Qualificar negativamente'))}}
+                                </span>
+
+                            {{else:}}
+                                <span style="float:right" class="karma-{{='plus' if eval['karma'] > 0 else 'minus' if eval['karma'] < 0 else 'zero'}}">
+                                    {{=eval['karma']}}
+                                </span>
+                            {{pass}}
+                        </b>
+                    </div>
+
+                    {{if session.auth:}}
+                        <div style='float:left; align:center'>
+                            <form>
+                                <input type="hidden" id="starred{{=eval['id']}}"/>
+                            </form>
+                            <span id="favorite{{=eval['id']}}" style="cursor:hand; cursor:pointer" 
+                                onclick="
+                                ajax('{{=URL(request.application, 'eval', 'favorite', vars=dict(eval_id=eval['id']))}}', 
+                                ['starred{{=eval['id']}}'], 'favorite{{=eval['id']}}');
+                                //ajax('{{=URL(request.application, 'profile', 'favorites')}}', ['starred{{=eval['id']}}'], 'favorites');
+                                {{if request.controller=='profile' and request.function == 'home':}}
+                                    location.reload();
+                                {{pass}}
+                                ">
+                                {{=IMG(_src=URL('static',('star_filled.png' if eh_favorita(eval['id']) else 'star_hollow.png')), 
+                                _title=T('Desfavoritar avaliação' if eh_favorita(eval['id']) else 'Favoritar avaliação'),
+                                _width=16, _height=16)}}
+                            </span>
+                            {{if eval['aluno_user_id'] == session.auth.user.id:}}
+                                {{if not eval['reply']:}}
+                                    {{=A(IMG(_src=URL('static', 'cross.png'), _border=0, _alt=T('Excluir avaliação'), _width=16, _height=16),
+                                    _title=T('Excluir avaliação'), 
+                                    _href=URL(request.application, 'eval', 'delete', vars=dict(eval_id=eval['id'])),
+                                    _onclick="return confirm('Tem certeza de que deseja excluir a avaliação?');")}}
+                                    {{=A(IMG(_src=URL('static', 'pencil.png'), _border=0, _alt=T('Editar avaliação'), _width=16, _height=16),
+                                    _title=T('Editar avaliação'),
+                                    _href=URL(request.application, 'eval', 'update', vars=dict(eval_id=eval['id'])))}}
+                                {{else:}}
+                                    {{=IMG(_width=16, _height=16, _src=URL('static', 'cross_disabled.png'), _border=0, _class='cursored',
+                                    _alt=T('Excluir avaliação'), _title=T('Você não pode excluir uma avaliação respondida'))}}
+                                    {{=IMG(_width=16, _height=16, _src=URL('static', 'pencil_disabled.png'), _border=0, _class='cursored',
+                                    _alt=T('Editar avaliação'), _title=T('Você não pode editar uma avaliação respondida'))}}
+                                {{pass}}
+                            {{pass}}
+                        </div>
+
+                    {{pass}}
+                </tr>
+
+                <div style="float:right"><br/><br/><br/>
+                    {{if get_prof_id() == eval['prof_id'] and not eval['reply']:}}
+                        {{=A('Responder', _href=URL(request.application, 'eval', 'reply', vars=dict(prof_id=eval['prof_id'], eval_id=eval['id'])))}}
+                    {{pass}}
+
+                </div>
+            </table>
+
+            {{if eval['reply']:}}
+                <div style="padding:10px; background-color:#999999;">
+                    {{if (session.auth) and (eval['prof_user_id'] == session.auth.user.id):}}
+                        {{=A(IMG(_src=URL('static', 'cross.png'), _border=0, _alt='Excluir resposta'), _title='Excluir resposta', 
+                        _href=URL(request.application, 'eval', 'reply_delete', vars=dict(eval_id=eval['id'])),
+                        _onclick="return confirm('Tem certeza de que deseja excluir a resposta?');")}}
+                        {{=A(IMG(_src=URL('static', 'pencil.png'), _border=0, _alt='Editar resposta'), _title='Editar resposta',
+                        _href=URL(request.application, 'eval', 'reply', vars=dict(eval_id=eval['id'])))}}
+                    {{pass}}
+
+                    <b>Resposta: </b>
+                    {{=eval['reply']}}
+                </div>
+            {{pass}}
+        </div>
+        <br/>
+
+
+    {{else:}}
+        <br/>
+    {{pass}}
+
+{{pass}}

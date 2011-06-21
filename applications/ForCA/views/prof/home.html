@@ -1,0 +1,162 @@
+{{extend 'layout.html'}}
+
+<script>
+    jQuery(document).ready(function(){jQuery('.discs_list').hide()});
+</script>
+
+{{if blocked:}}
+    <div class="warning" style="padding: 10px;">
+        <h1>
+            Perfil bloqueado
+        </h1>
+        {{if session.auth:}}
+            {{if session.auth.user.id == prof.user_id:}}
+                <div style="float:right">
+                    <b>{{=A('desbloquear meu perfil', _href=URL('prof', 'unblock', vars=dict(prof_id=prof.id)),\
+                        _onclick="return confirm('Tem certeza de que deseja desbloquear seu perfil?');")}}</b>
+                </div>
+            {{pass}}
+        {{pass}}
+        <b>
+            Este professor optou por bloquear seu perfil no ForCA
+        </b>
+    </div>
+{{else:}}
+
+    <div>
+        <table>
+            <tr>
+                <td rowspan='2'>
+                    {{if prof.picture:}}
+                        {{=A(IMG(_width='100px', _src=URL('download', args=prof.picture)), 
+                            _href=URL('home', vars=dict(prof_id=prof.id)))}}
+                    {{else:}}
+                        {{=A(IMG(_width='100px', _src=URL(request.application, 'static/profs', 
+                                prof.email.split('@')[0]+'.jpg')),
+                            _href=URL('home', vars=dict(prof_id=prof.id)))}}
+                    {{pass}}
+                </td>
+                <td>
+                    <table>
+                        <tr>
+                            <h2>{{=prof.full_name}}</h2>
+                        </tr>
+                        <tr>
+                            {{=prof.email}}<br />
+                            {{if prof.site:}} 
+                                {{=A(prof.site, _href=prof.site, _target="_blank")}}
+                            {{pass}}
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <div style="font-size:50px">
+                        <b>{{=prof.grade or ''}}</b>
+                    </div>
+                </td>
+                <td style="padding:30px">
+                    <a href={{=URL(request.application, 'report', 'generate', vars=dict(prof_id=prof.id))}}>
+                        {{=IMG(_src=URL('static', 'pdf.gif'), _border=0)}}
+                        baixar em PDF
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h4 class="discs_toggle cursored padded10" onclick="jQuery('.discs_list').slideToggle()">
+         {{=T('Mais informações sobre ')}}{{=prof.short_name}}
+         {{=IMG(_src=URL('static', 'plus.png'))}}
+    </h4>
+    <div class="discs_list">
+        {{if len(evals)>0:}}        
+            <div style="padding:15px;">
+                <table class="infotable">
+                    <th colspan=2 class="infoheader">Estatísticas:</th>
+                    <tr>
+                        <td style="text-align:center">
+                            <b>{{=evals_stats['len']}} {{='avaliações recebidas' if evals_stats['len'] > 1 else 'avaliação recebida'}}</b>
+                        </td>
+                        {{evolution_graph = graph_evolution_evals(prof_evals)}}
+                        {{if evolution_graph:}}
+                            <td style="text-align:center">
+                                <b>Evolução</b>
+                            </td>
+                        {{pass}}
+                    </tr>
+                    <tr>
+                        <td>                            
+                            <img src="{{=graph_grades(prof_evals)}}">
+                        </td>
+                        {{if evolution_graph:}}
+                            <td>                            
+                                <img src="{{=evolution_graph}}">
+                            </td>
+                        {{pass}}
+                    </tr>
+                </table>
+            </div>
+        {{pass}}
+        {{if len(discs)>0:}}
+            <table class="infotable">
+            <th colspan=2 class="infoheader">Disciplinas ministradas:</th>
+            <tr>
+                <th>{{=T('Disciplina')}}</th>
+                <th>{{=T('Média de ')}}{{=prof.short_name}}<th>
+            </tr>
+            {{for i, disc in enumerate(discs):}}
+                <tr class="{{=['even', 'odd'][i % 2]}}">
+                    <td>{{=A(disc['name'],
+                        _href=URL(request.application,'disc','home',vars=dict(disc_id=disc['id'])))}}</td>
+                    <td>
+                        <b>{{=disc['grade'] if not disc['grade'] == '\\' else '-'}}</b>
+                    </td>
+                </tr>
+            {{pass}}
+            </table>
+        {{pass}}    
+    </div>
+
+
+    <br/>
+    <!--
+    <div class="filters">
+        <form id='search' name='search' action="">
+            <input type="hidden" name="prof_id" value="{{=prof.id}}"/>
+            <table>
+                <tr>
+                    <td style="padding:0px; vertical-align:middle;"><b>Disciplina:</b></td>
+                    <td>{{#fields['disc']}}</td>
+                    <td style="padding:0px; vertical-align:middle;"><b>Ano:</b></td>
+                    <td>{{#fields['year']}}</td>
+                    <td style="padding:0px; vertical-align:middle;"><b>Nota:</b></td>
+                    <td>{{#fields['grade']}}</td>
+                    <td>
+                        <input type="submit" name="submit" value="Buscar!" style="float:right"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    -->
+    {{if not len(evals):}}
+        <br/><br/>
+        <i>nenhuma avaliação</i>
+        <br/><br/>
+    {{pass}}
+
+    {{include "eval/list.html"}}
+
+    {{if not auth.has_membership('Professor'):}}
+        {{=A('Adicionar avaliação', _href=URL(request.application, 'eval', 'create', vars=dict(prof_id=prof.id)))}}
+    {{pass}}
+    {{if session.auth:}}
+        {{if session.auth.user.id == prof.user_id:}}
+            <div style="float:right;">
+                <b>{{=A('bloquear meu perfil', _href=URL('prof', 'block', vars=dict(prof_id=prof.id)),\
+                    _onclick="return confirm('Tem certeza de que deseja bloquear seu perfil?');")}}</b>
+            </div>
+        {{pass}}
+    {{pass}}
+    
+{{pass}}

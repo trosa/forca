@@ -1,0 +1,20 @@
+{{extend 'layout.html'}}
+<h1>Disciplinas</h1>
+{{if auth.has_membership('Admin'):}}
+    {{=A(H3('Criar nova disciplina'), _href='create')}}
+{{pass}}
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Código</th>
+        <th>Média</th>
+    </tr>
+    {{for i, disc in enumerate(discs):}}
+        <tr class="{{=['even', 'odd'][i % 2]}}">
+            <td>{{=A(disc.name, _href=URL('home', vars=dict(disc_id=disc.id)))}}</td>
+            <td>{{=disc.code}}</td>
+            <td><b>{{=disc.grade or '-'}}</b></td>
+        </tr>
+    {{pass}}
+</table>
+

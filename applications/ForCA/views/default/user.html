@@ -1,0 +1,19 @@
+{{extend 'layout.html'}}
+<h2>{{=T( request.args(0).replace('_',' ').capitalize() )}}</h2>
+{{if request.args(0)=='register':}}
+	{{include 'terms.html'}}
+	<div class='warning'>
+		{{=IMG(_src=URL('static', 'warning.png'))}}
+		<b>{{=T('Atenção: ')}}</b>{{=T('Ao completar seu registro, você \
+		estará concordando com os termos de uso acima.')}}
+	</div>
+{{pass}}
+{{=form}}
+{{if request.args(0)=='login':}}
+{{if not 'register' in auth.settings.actions_disabled:}}
+<br/><a href="{{=URL(r=request,args='register')}}">registrar</a>
+{{pass}}
+{{if not 'request_reset_password' in auth.settings.actions_disabled:}}
+<br/><a href="{{=URL(r=request,args='request_reset_password')}}">esqueci a senha!</a>
+{{pass}}
+{{pass}}

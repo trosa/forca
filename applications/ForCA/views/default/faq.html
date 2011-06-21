@@ -1,0 +1,109 @@
+{{extend 'layout.html'}}
+<div class="gradeA padded10" style="text-align:center; font-size:xx-large; border: 0px !important;">
+    <span class="greenish"><b>{{=len_users}}</b></span> usuários, 
+    <span class="greenish"><b>{{=len_evals}}</b></span> avaliações, 
+    <span class="greenish"><b>{{=len_karmas}}</b></span> qualificações.
+</div>
+<br/>
+<h1>FAQ</h1>
+<br/>
+
+<span class="greenish" style="font-size:large">
+    <b>
+        O que é "ForCA"?
+    </b>
+</span>
+<br/>
+ForCA é um fórum colaborativo de avaliação de professores.
+
+<br/><br/>
+
+<span class="greenish" style="font-size:large">
+    <b>
+        Eu preciso me cadastrar?
+    </b>
+</span>
+<br/>
+Você pode acessar todo o conteúdo de avaliações do ForCA sem estar 
+cadastrado, mas para postar conteúdo (avaliações, qualificações) você 
+deve estar cadastrado.
+
+<br/><br/>
+
+<span class="greenish" style="font-size:large">
+    <b>
+        Como eu posso me cadastrar?
+    </b>
+</span>
+<br/>
+É muito simples: clique no link "registrar" na barra de navegação acima
+á direita e informe seus dados. É importante lembrar que você precisa 
+informar um e-mail válido @{{=required_domain}} para que seu cadastro seja efetuado.
+Após o registro, um link de verificação será enviado para o seu e-mail.
+Clique neste link e seu cadastro estará ativado!
+
+<br/><br/>
+
+<span class="greenish" style="font-size:large">
+    <b>
+        Sou um professor. Posso participar?
+    </b>
+</span>
+<br/>
+Claro! Sua participação é muito bem-vinda. Ao se cadastrar com seu
+e-mail @{{=required_domain}} o sistema automaticamente o identificará como
+professor e dará acesso a funcionalidades específicas, tais como o
+direito de resposta a avaliações.
+<br/><br/>
+
+<span class="greenish" style="font-size:large">
+    <b>
+        O que é uma avaliação?
+    </b>
+</span>
+<br/>
+Uma avaliação é um parecer que um aluno fornece referente a um
+professor e seu trabalho ministrando uma dada disciplina, em um
+dado semestre. Ela é composta de uma nota, que é um conceito que o
+aluno atribui (não tem a ver com a nota que ele tirou na cadeira), e
+um comentário opcional através do qual o aluno pode descrever aspectos
+que considere importante para embasar sua nota.
+A idéia de ligar uma avaliação à combinação professor+disciplina+semestre
+é uma decisão de projeto largamente analisada. Este modelo é pensado para
+propiciar a máxima relevância e qualidade das avaliações postadas, pois
+possibilita uma descrição empírica da experiência acadêmica do aluno, bem
+como a geração de estatísticas para cada um dos três elementos que podem
+ser úteis na hora de decidir a matrícula.
+<br/><br/>
+
+<span class="greenish" style="font-size:large">
+    <b>
+        O que é uma "qualificação"?
+    </b>
+</span>
+<br/>
+Uma qualificação é uma espécia de "meta-avaliação", ou seja, a
+avaliação de uma avaliação. Ao visualizar uma avaliação feita por
+outro usuário, você verá botões de karma (
+{{=IMG(_src=URL('static', 'thumb-up.png'))}} e 
+{{=IMG(_src=URL('static', 'thumb-down.png'))}}). Clicando nestes
+botões você pode qualificar a avaliação positivamente ou
+negativamente. Lembre-se que a qualificação deve refletir não
+apenas a sua opinião (concordo/não concordo), mas também a qualidade
+da avaliação, ou seja, se você acha que a avaliação foi feita de maneira
+coerente, bem embasada e bem construída ou acha que foi feita com má fé
+ou intenções enviesadas.
+<br/><br/>
+
+<span class="greenish" style="font-size:large">
+    <b>
+        E para que servem as qualificações?
+    </b>
+</span>
+<br/>
+Além de fornecer uma idéia visual rápida sobre a qualidade da avaliação
+que você está lendo, também tem um propósito mais prático: avaliações
+mais bem qualificadas têm maior peso nos cálculos de média. Ou seja,
+uma avaliação de qualidade é mais relevante para o ForCA.
+<br/><br/>
+

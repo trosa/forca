@@ -1,0 +1,106 @@
+{{extend 'layout.html'}}
+
+<script>
+    jQuery(document).ready(function(){jQuery('.profs_list').hide()});
+</script>
+
+<table>
+    <tr>
+        <td>
+            <table>
+                <tr>
+                    <h2>{{=disc.short_name}}</h2>
+                </tr>
+                <tr>
+                    {{=disc.name}}
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+{{if disc.resume != None:}}
+    <table>
+        <tr>
+           <th><h3>Súmula</h3></th>
+        </tr>
+        <tr>
+            <td>{{=disc.resume or '-'}}</td>
+        </tr>
+    </table>
+{{pass}}
+
+{{if len(profs)>0:}}
+     <h4 class="profs_toggle cursored padded10" onclick="jQuery('.profs_list').slideToggle()">
+         {{=T('Mais informações sobre ')}}{{=disc.short_name}}
+         {{=IMG(_src=URL('static', 'plus.png'))}}
+    </h4>
+    <div class="profs_list">
+        {{if evals_stats['len'] > 0:}}
+            <div style="padding:15px;">
+                <table class="infotable">
+                    <th colspan=2 class="infoheader">Estatísticas:</th>
+                    <tr>
+                        <td style="text-align:center">
+                            <b>{{=evals_stats['len']}} {{='avaliações postadas' if evals_stats['len'] > 1 else 'avaliação postada'}} (média {{=evals_stats['grade_avg']}})</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>                            
+                            <img src="{{=graph_grades(disc_evals)}}">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        {{pass}}
+        <table class="infotable">
+        <th colspan=2 class="infoheader">Professores:</th>
+        <tr>
+            <th>{{=T('Professor')}}</th>
+            <th>{{=T('Média em ')}}{{=disc.short_name}}</th>
+        </tr>
+        {{for i, prof in enumerate(profs):}}
+            <tr class="{{=['even', 'odd'][i % 2]}}">
+                <td>{{=A(prof['full_name'], _href=URL(request.application,'prof','home',vars=dict(prof_id=prof['id'])))}}</td>
+                <td>
+                    <b>{{=prof['grade'] if not prof['grade'] == '\\' else '-'}}</b>
+                </td>
+            </tr>
+        {{pass}}
+        </table>
+    </div>
+    
+{{pass}}
+
+<br/>
+<!--
+<div class="filters">
+    <form id='search' name='search' action="">
+        <input type="hidden" name="disc_id" value="{{=disc.id}}"/>
+        <table>
+            <tr>
+                <td style="padding:0px; vertical-align:middle;"><b>Professor:</b></td>
+                <td>{{#fields['prof']}}</td>
+                <td style="padding:0px; vertical-align:middle;"><b>Ano:</b></td>
+                <td>{{#fields['year']}}</td>
+                <td style="padding:0px; vertical-align:middle;"><b>Nota:</b></td>
+                <td>{{#fields['grade']}}</td>
+                <td>
+                    <input type="submit" name="submit" value="Buscar!" style="float:right"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+-->
+{{if not len(evals):}}
+    <br/><br/>
+    <i>nenhuma avaliação</i>
+    <br/><br/>
+{{pass}}
+
+{{include "eval/list.html"}}
+
+{{if not auth.has_membership('Professor'):}}
+    {{=A('Adicionar avaliação', _href=URL(request.application, 'eval', 'create', vars=dict(disc_id=disc.id)))}}
+{{pass}}

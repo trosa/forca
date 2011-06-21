@@ -1,0 +1,20 @@
+{{extend 'layout.html'}}
+<h2>Direito de resposta</h2>
+<span>
+{{if not eval.anonimo:}}
+	O aluno {{=B(get_link_to_aluno_home(eval.aluno_id))}}
+{{else:}}
+	Um aluno que não quis se identificar
+{{pass}}
+	avaliou você sobre seu trabalho em {{=B(get_link_to_disc_home(eval.disciplina_id))}},
+	em {{=B(str(eval.year)+'/'+str(eval.semester))}}:
+	<br/><br/>
+	{{=I(eval.comment)}}
+	<br/><br/>
+{{if not eval.anonimo:}}
+	{{=B(get_link_to_aluno_home(eval.aluno_id))}} já postou {{=B(len(get_posted_evals(eval.aluno_id)))}}
+	avaliações, e a média de qualidade de suas avaliações é {{=B(get_karma_avg(eval.aluno_id))}}
+	{{=B('(neutra)' if get_karma_avg(eval.aluno_id)==0 else '(positiva)' if get_karma_avg(eval.aluno_id)>0 else '(negativa)')}}.
+{{pass}}	
+</span>
+{{=form_reply}}

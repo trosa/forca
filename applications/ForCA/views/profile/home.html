@@ -1,0 +1,99 @@
+{{extend 'layout.html'}}
+{{if perfil_proprio:}}
+    <h1>Olá, {{=aluno.short_name}}!</h1>
+    <ul>
+        {{if evals_stats['len'] > 0:}}
+            <div style="padding:15px;">
+                <table class="infotable">
+                    <th colspan=2 class="infoheader">Suas estatísticas:</th>
+                    <tr>
+                        <td style="text-align:center">
+                            <b>{{=evals_stats['len']}} {{='avaliações postadas' if evals_stats['len'] > 1 else 'avaliação postada'}} (média {{=evals_stats['grade_avg']}})</b>
+                        </td>
+                        {{if evals_stats['karma_len'] > 0:}}
+                        <td style="text-align:center">
+                            <b>{{=evals_stats['karma_len']}} {{='qualificações' if evals_stats['karma_len'] > 1 else 'qualificação'}} (saldo {{=evals_stats['karma_avg']}})</b>
+                        </td>
+                        {{pass}}
+                    </tr>
+                    <tr>
+                        <td>                            
+                            <img src="{{=graph_grades(user_evals)}}">
+                        </td>
+                        {{if evals_stats['karma_len'] > 0:}}
+                        <td>
+                            <img src="{{=graph_karmas(evals_stats)}}">
+                        </td>
+                        {{pass}}
+                    </tr>
+                </table>
+            </div><br/>
+            <li><h3>Últimas avaliações enviadas:</h3></li><br>
+            <div class="latest">
+                {{include "eval/list.html"}}
+            </div>
+            {{evals = evals_replyed}}
+            <div class="answered">
+            {{if len(evals) > 0:}}
+                <li><h3>Últimas avaliações respondidas:</h3></li><br>
+                    {{include "eval/list.html"}}
+                </div>
+            {{else:}}
+                <li><h3>Você ainda não teve nenhuma avaliação respondida.</h3></li><br>
+            {{pass}}
+        {{else:}}
+            <li><h3>Você ainda não postou nenhuma avaliação.</h3></li>
+        {{pass}}
+        
+        {{evals = evals_favorited}}
+        {{if len(evals) > 0:}}
+            <li><h3>Avaliações favoritas:</h3></li><br>
+            <div id="favorites">
+            {{include "eval/list.html"}}
+            </div>
+        {{else:}}
+            <li><h3>Você ainda não favoritou nenhuma avaliação.</h3></li><br>
+        {{pass}}
+    </ul>
+{{else:}}
+    <table>
+        <tr>
+            <h1>{{=aluno.full_name}}</h1>
+        </tr>
+        <tr>
+            {{=aluno.email}}
+        </tr>
+    </table>       
+    {{if evals_stats['len'] > 0:}}
+        <div style="padding:15px;">
+            <table class="infotable">
+                <th colspan=2 class="infoheader">Estatísticas de {{=aluno.short_name}}:</th>
+                <tr>
+                    <td style="text-align:center">
+                        <b>{{=evals_stats['len']}} {{='avaliações postadas' if evals_stats['len'] > 1 else 'avaliação postada'}} (média {{=evals_stats['grade_avg']}})</b>
+                    </td>
+                    {{if evals_stats['karma_len'] > 0:}}
+                    <td style="text-align:center">
+                        <b>{{=evals_stats['karma_len']}} {{='qualificações' if evals_stats['karma_len'] > 1 else 'qualificação'}} (saldo {{=evals_stats['karma_avg']}})</b>
+                    </td>
+                    {{pass}}
+                </tr>
+                <tr>
+                    <td>
+                        <img src="{{=graph_grades(user_evals)}}">
+                    </td>
+                {{if evals_stats['karma_len'] > 0:}}
+                    <td>
+                        <img src="{{=graph_karmas(evals_stats)}}">
+                    </td>
+                {{pass}}
+                </tr>
+            </table>
+        </div>
+        <br/>
+        <span><h3>Últimas avaliações de {{=aluno.short_name}}:</h3></span><br>
+        {{include "eval/list.html"}}
+    {{else:}}
+        <span><h3>{{=aluno.short_name}} ainda não postou nenhuma avaliação.</h3></span>
+    {{pass}}
+{{pass}}

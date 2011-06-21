@@ -1,0 +1,25 @@
+{{extend 'layout.html'}}
+<h2>
+	{{if 'prof_name' in locals():}}
+		{{=prof_name}}
+	{{else:}}
+		{{=disc_name}}
+	{{pass}}
+    - Adicionar Avaliação 
+</h2>
+<br/>
+<div class="alertbox">
+    {{=IMG(_src=URL(request.application, 'static', 'warning.png'))}}
+    <b>Atenção</b><br/>
+    <ul>
+        <li>Sua avaliação deve considerar sua experiência com o professor, na disciplina, no semestre.</li>
+        <li>Avalie com consciência. Evite avaliar o comportamento pessoal do professor ou simplesmente a dificuldade da disciplina.</li>
+        <li>Evite provocações, ofensas, indiretas ou acusações. Exerça seu direito com responsabilidade.</li>
+        <li>Ao focar sua avaliação na sua experiência acadêmica e no desempenho do professor, de maneira imparcial,
+            você estará contribuindo para a melhoria da qualidade do ensino oferecido pela nossa instituição.</li>
+    </ul>
+</div>
+<br/>
+{{=form_add}}
+{{pass}}
+

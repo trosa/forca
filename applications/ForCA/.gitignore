@@ -1,0 +1,6 @@
+databases/
+errors/
+sessions/
+uploads/
+*.swp
+*.bak
