@@ -1733,6 +1733,7 @@ class PostgreSQLAdapter(BaseAdapter):
         self.execute("SET standard_conforming_strings=on;")
 
     def lastrowid(self,table):
+        #self.execute("select nextval('%s')" % table._sequence_name)
         self.execute("select currval('%s')" % table._sequence_name)
         return int(self.cursor.fetchone()[0])
 

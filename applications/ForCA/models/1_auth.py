@@ -43,12 +43,12 @@ auth.settings.register_next = URL(request.application, 'default', 'user/login')
 
 auth.define_tables()
 
-if not auth.id_group('Aluno'):
-    auth.add_group('Aluno', 'Aluno')
-if not auth.id_group('Professor'):
-    auth.add_group('Professor', 'Professor')
-if not auth.id_group('Admin'):
-    auth.add_group('Admin', 'Administrador')
+#if not auth.id_group('Aluno'):
+#    auth.add_group('Aluno', 'Aluno')
+#if not auth.id_group('Professor'):
+#    auth.add_group('Professor', 'Professor')
+#if not auth.id_group('Admin'):
+#    auth.add_group('Admin', 'Administrador')
 
 #definicao de categoria por email
 def is_professor(form):
