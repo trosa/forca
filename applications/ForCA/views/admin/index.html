@@ -1,4 +1,21 @@
 {{extend 'layout.html'}}
+
 {{=H1('Admin')}}
 {{=A(H2('Criar professor'), _href='../prof/create')}}
 {{=A(H2('Criar disciplina'), _href='../disc/create')}}
+
+<div name="last_registered">
+    <h2>Últimos usuários registrados</h2>
+    <ul>
+        {{for user in users:}}
+            <li><b>{{=user['name']}}</b> ({{=user['email']}})</li>
+        {{pass}}
+    </ul>
+</div>
+<br/>
+<div name="evals_stats">
+    <h2>Estatísticas de avaliações</h2>
+    <img src="{{=chart_url}}"/>
+</div>
+
+{{pass}}
