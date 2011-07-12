@@ -1,3 +1,5 @@
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
 echo "This script will:
 1) install all modules need to run web2py on Ubuntu/Debian
 2) install web2py in /home/www-data/
@@ -53,17 +55,7 @@ apt-get -y install mercurial
 
 echo "downloading, installing and starting web2py"
 echo "==========================================="
-#cd /home
-#mkdir www-data
-#cd www-data
-#rm web2py_src.zip*
-#wget http://web2py.com/examples/static/web2py_src.zip
-#unzip web2py_src.zip
-mkdir /home/www-data
-mkdir /home/www-data/web2py
-cp * /home/www-data/web2py -r
-cd /home/www-data
-chown -R www-data:www-data web2py
+chown -R www-data:www-data $DIR
 
 echo "setting up apache modules"
 echo "========================="
@@ -90,9 +82,9 @@ NameVirtualHost *:443
 <VirtualHost *:80>
   WSGIDaemonProcess web2py user=www-data group=www-data
   WSGIProcessGroup web2py
-  WSGIScriptAlias / /home/www-data/web2py/wsgihandler.py
+  WSGIScriptAlias / %%DIR%%/wsgihandler.py
 
-  <Directory /home/www-data/web2py>
+  <Directory %%DIR%%>
     AllowOverride None
     Order Allow,Deny
     Deny from all
@@ -102,8 +94,8 @@ NameVirtualHost *:443
   </Directory>
 
   AliasMatch ^/([^/]+)/static/(.*) \
-           /home/www-data/web2py/applications/$1/static/$2
-  <Directory /home/www-data/web2py/applications/*/static/>
+           %%DIR%%/applications/$1/static/$2
+  <Directory %%DIR%%/applications/*/static/>
     Options -Indexes
     Order Allow,Deny
     Allow from all
@@ -128,9 +120,9 @@ NameVirtualHost *:443
 
   WSGIProcessGroup web2py
 
-  WSGIScriptAlias / /home/www-data/web2py/wsgihandler.py
+  WSGIScriptAlias / %%DIR%%/wsgihandler.py
 
-  <Directory /home/www-data/web2py>
+  <Directory %%DIR%%>
     AllowOverride None
     Order Allow,Deny
     Deny from all
@@ -140,9 +132,9 @@ NameVirtualHost *:443
   </Directory>
 
   AliasMatch ^/([^/]+)/static/(.*) \
-        /home/www-data/web2py/applications/$1/static/$2
+        %%DIR%%/applications/$1/static/$2
 
-  <Directory /home/www-data/web2py/applications/*/static/>
+  <Directory %%DIR%%/applications/*/static/>
     Options -Indexes
     ExpiresActive On
     ExpiresDefault "access plus 1 hour"
@@ -155,6 +147,8 @@ NameVirtualHost *:443
 </VirtualHost>
 ' > /etc/apache2/sites-available/default
 
+sed -i "s=%%DIR%%=$DIR=g" /etc/apache2/sites-available/default
+
 # echo "setting up PAM"
 # echo "================"
 # sudo apt-get install pwauth
@@ -166,7 +160,7 @@ echo "restarting apage"
 echo "================"
 
 /etc/init.d/apache2 restart
-cd /home/www-data/web2py
+cd $DIR
 sudo -u www-data python -c "from gluon.widget import console; console();"
 sudo -u www-data python -c "from gluon.main import save_password; save_password(raw_input('admin password: '),443)"
 echo "done!"
