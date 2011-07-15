@@ -8,12 +8,22 @@
         <th>Nome</th>
         <th>Código</th>
         <th>Média</th>
+        {{if auth.has_membership('Admin'):}}
+            <th>Admin</th>
+        {{pass}}
     </tr>
     {{for i, disc in enumerate(discs):}}
         <tr class="{{=['even', 'odd'][i % 2]}}">
             <td>{{=A(disc.name, _href=URL('home', vars=dict(disc_id=disc.id)))}}</td>
             <td>{{=disc.code}}</td>
             <td><b>{{=disc.grade or '-'}}</b></td>
+            {{if auth.has_membership('Admin'):}}
+                <td>
+                    {{=A(IMG(_src=URL('static','pencil.png'), _title="Editar"), _href=URL('disc','edit', vars=dict(disc_id=disc.id)))}}
+                    {{=A(IMG(_src=URL('static','cross.png'), _title="Excluir"), _href=URL('disc','delete', vars=dict(disc_id=disc.id)),
+                      _onclick="return confirm('Tem certeza de que deseja excluir a disciplina?');")}}
+                </td>
+            {{pass}}
         </tr>
     {{pass}}
 </table>
