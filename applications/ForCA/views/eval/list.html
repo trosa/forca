@@ -131,8 +131,8 @@
                                 _title=T('Desfavoritar avaliação' if eh_favorita(eval['id']) else 'Favoritar avaliação'),
                                 _width=16, _height=16)}}
                             </span>
-                            {{if eval['aluno_user_id'] == session.auth.user.id:}}
-                                {{if not eval['reply']:}}
+                            {{if eval['aluno_user_id'] == session.auth.user.id or auth.has_membership('Admin'):}}
+                                {{if not eval['reply'] or auth.has_membership('Admin'):}}
                                     {{=A(IMG(_src=URL('static', 'cross.png'), _border=0, _alt=T('Excluir avaliação'), _width=16, _height=16),
                                     _title=T('Excluir avaliação'), 
                                     _href=URL(request.application, 'eval', 'delete', vars=dict(eval_id=eval['id'])),
