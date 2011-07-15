@@ -32,11 +32,24 @@ def up():
     eval_id = request.vars['eval_id']
     up = create(eval_id, 1)
     inc = inc_karma(eval_id, 1)
-    return inc
+    karma_string = '''
+    <span class="karma-minus"><b>%s</b></span> / <span class="karma-plus"><b>%s</b></span>
+    ''' % (
+            str(db((Karmas.avaliacao_id==eval_id)&(Karmas.value==-1)).count()),
+            str(db((Karmas.avaliacao_id==eval_id)&(Karmas.value==1)).count())
+            )
+    return karma_string
 
 @auth.requires_login()
 def down():
     eval_id = request.vars['eval_id']
     down = create(eval_id, -1)
     inc = inc_karma(eval_id, -1)
+    karma_string = '''
+    <span class="karma-minus"><b>%s</b></span> / <span class="karma-plus"><b>%s</b></span>
+    ''' % (
+            str(db((Karmas.avaliacao_id==eval_id)&(Karmas.value==-1)).count()),
+            str(db((Karmas.avaliacao_id==eval_id)&(Karmas.value==1)).count())
+            )
+    return karma_string
     return inc

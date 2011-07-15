@@ -78,7 +78,6 @@
                         </td>
                     </tr>
                     <div style='float:right'>
-                        <b>
                             {{if not has_karmed(get_aluno_id(), eval['id']) and get_aluno_id() and get_aluno_id()!=eval['aluno_id']:}}
                                 <form>
                                     <input type="hidden" id="karma{{=eval['id']}}"/>
@@ -87,30 +86,31 @@
                                     onclick="ajax('{{=URL(request.application, 'karma', 'up', vars=dict(eval_id=eval['id']))}}', 
                                     ['karma{{=eval['id']}}'], 'karma_count{{=eval['id']}}');
                                     jQuery('#plus{{=eval['id']}}').fadeOut();
-                                    jQuery('#minus{{=eval['id']}}').fadeOut();
-                                    jQuery('#karma_count{{=eval['id']}}').removeClass().addClass('{{=get_karma_class(eval['id'],1)}}');">
+                                    jQuery('#minus{{=eval['id']}}').fadeOut();">
                                     {{=IMG(_src=URL('static', 'thumb-up.png'), _title=T('Qualificar positivamente'))}}
                                 </span>
 
-                                <span style="float:right" id="karma_count{{=eval['id']}}" 
-                                    class="karma-{{='plus' if eval['karma'] > 0 else 'minus' if eval['karma'] < 0 else 'zero'}}">{{=eval['karma']}}
+                                <span style="float:right" id="karma_count{{=eval['id']}}">
+                                    <span class="karma-minus"><b>{{=eval['karma_down']}}</b></span>
+                                    /
+                                    <span class="karma-plus"><b>{{=eval['karma_up']}}</b></span>
                                 </span>
 
                                 <span id="minus{{=eval['id']}}" style="float:right; cursor:hand; cursor:pointer" 
                                     onclick="ajax('{{=URL(request.application, 'karma', 'down', vars=dict(eval_id=eval['id']))}}', 
                                     ['karma{{=eval['id']}}'], 'karma_count{{=eval['id']}}');
                                     jQuery('#plus{{=eval['id']}}').fadeOut();
-                                    jQuery('#minus{{=eval['id']}}').fadeOut();
-                                    jQuery('#karma_count{{=eval['id']}}').removeClass().addClass('{{=get_karma_class(eval['id'],-1)}}');">
+                                    jQuery('#minus{{=eval['id']}}').fadeOut();">
                                     {{=IMG(_src=URL('static', 'thumb-down.png'), _title=T('Qualificar negativamente'))}}
                                 </span>
 
                             {{else:}}
-                                <span style="float:right" class="karma-{{='plus' if eval['karma'] > 0 else 'minus' if eval['karma'] < 0 else 'zero'}}">
-                                    {{=eval['karma']}}
+                                <span style="float:right" id="karma_count{{=eval['id']}}">
+                                    <span class="karma-minus"><b>{{=eval['karma_down']}}</b></span>
+                                    /
+                                    <span class="karma-plus"><b>{{=eval['karma_up']}}</b></span>
                                 </span>
                             {{pass}}
-                        </b>
                     </div>
 
                     {{if session.auth:}}
