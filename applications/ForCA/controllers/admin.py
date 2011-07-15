@@ -2,6 +2,7 @@
 def index():
     events = auth.db(auth.db.auth_event.id>0).select(orderby=~auth.db.auth_event.time_stamp)
     users = []
+    logged = []
     for event in events:
         if event.description[-10:] == 'Registered':
             desc = event.description
@@ -10,6 +11,13 @@ def index():
             if user:
                 if not user.registration_key:
                     users.append({'email': user.email, 'name': user.first_name})
+        if event.description[-9:] == 'Logged-in':
+            desc = event.description
+            uid = desc.split()[1]
+            user = auth.db(auth.db.auth_user.id==uid).select().first()
+            if user and user.email != master_admin:
+                if not user.registration_key:
+                    logged.append({'email': user.email, 'name': user.first_name, 'time': event.time_stamp})
 
     evals = db(Avaliacoes.id>0).select().as_list()
     num_evals = len(evals)
@@ -41,4 +49,4 @@ def index():
                                                     evals_stats['D']['num'], evals_stats['D']['pct'],\
                                                     evals_stats['FF']['num'], evals_stats['FF']['pct'])
 
-    return dict(users=users[:10], chart_url=chart_url)
+    return dict(users=users[:10], logged=logged[:20], chart_url=chart_url)

@@ -7,7 +7,7 @@ def create():
         session.flash = 'Professor criado com sucesso'
     return dict(form=form)
 
-@auth.requires_membership('admin')
+@auth.requires_membership('Admin')
 def edit():
     prof_id = request.vars['prof_id']
     prof = db(db.professores.id==prof_id).select().first()
@@ -16,6 +16,19 @@ def edit():
         session.flash = 'Professor atualizado com sucesso'
         redirect(URL(request.application, 'prof', 'list'))
     return dict(form=form)
+
+@auth.requires_membership('Admin')
+def delete():
+    prof_id = request.vars['prof_id']
+    if request.wsgi.environ['REQUEST_METHOD'] == 'GET':
+        session.jump_back = request.env.http_referer
+    prof_evals = get_evals(prof_id,None).select()
+    for eval in prof_evals:
+        db(Avaliacoes.id==eval.id).delete()
+    db(Professores.id==prof_id).delete()
+    db.commit()
+    session.flash = T('Professor excluído com sucesso')
+    redirect(session.jump_back)
 
 def list():
     '''

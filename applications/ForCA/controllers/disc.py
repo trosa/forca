@@ -7,6 +7,29 @@ def create():
         session.flash = 'ok'
     return dict(form=form)
 
+@auth.requires_membership('Admin')
+def edit():
+    disc_id = request.vars['disc_id']
+    disc = db(Disciplinas.id==disc_id).select().first()
+    form = SQLFORM(db.disciplinas, disc)
+    if form.accepts(request.vars, session):
+        session.flash = 'Disciplina atualizada com sucesso'
+        redirect(URL(request.application, 'disc', 'list'))
+    return dict(form=form)
+
+@auth.requires_membership('Admin')
+def delete():
+    disc_id = request.vars['disc_id']
+    if request.wsgi.environ['REQUEST_METHOD'] == 'GET':
+        session.jump_back = request.env.http_referer
+    disc_evals = get_evals(None,disc_id).select()
+    for eval in disc_evals:
+        db(Avaliacoes.id==eval.id).delete()
+    db(Disciplinas.id==disc_id).delete()
+    db.commit()
+    session.flash = T('Disciplina excluída com sucesso')
+    redirect(session.jump_back)
+
 def list():
     '''
     Exibe a lista de disciplinas

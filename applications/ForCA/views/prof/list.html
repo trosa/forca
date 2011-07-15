@@ -7,7 +7,10 @@
 	<tr>
         <th>Nome</th>
         <th>Tá no ForCA?</th>
-		<th>Média</th>
+        <th>Média</th>
+        {{if auth.has_membership('Admin'):}}
+            <th>Admin</th>
+        {{pass}}
 	</tr>
 	{{for i, prof in enumerate(profs):}}
     <tr class={{='warning' if prof.blocked else ['even', 'odd'][i % 2]}}>
@@ -26,6 +29,13 @@
                 {{pass}}
             </td>
             <td><b>{{=prof.grade or '-'}}</b></td>
+        {{pass}}
+        {{if auth.has_membership('Admin'):}}
+            <td>
+                {{=A(IMG(_src=URL('static','pencil.png'), _title="Editar"), _href=URL('prof','edit', vars=dict(prof_id=prof.id)))}}
+                {{=A(IMG(_src=URL('static','cross.png'), _title="Excluir"), _href=URL('prof','delete', vars=dict(prof_id=prof.id)),
+                  _onclick="return confirm('Tem certeza de que deseja excluir o professor?');")}}
+            </td>
         {{pass}}
 	</tr>
 	{{pass}}
