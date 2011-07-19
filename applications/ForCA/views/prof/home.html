@@ -24,6 +24,19 @@
 {{else:}}
 
     <div>
+    {{if auth.has_membership('Admin'):}}
+        <div class="gradeC">
+        <b>Admin: </b>
+        <a href={{=URL('prof', 'edit', vars=dict(prof_id=prof.id))}}>
+            {{=IMG(_src=URL('static','pencil.png'))}}<b>Editar dados</b>
+        </a>
+        |
+        <a href={{=URL('prof', 'delete', vars=dict(prof_id=prof.id))}} 
+        onclick="return confirm('Tem certeza de que deseja excluir o professor?');">
+            {{=IMG(_src=URL('static','cross.png'))}}<b>Excluir professor</b>
+        </a>
+        </div>
+    {{pass}}
         <table>
             <tr>
                 <td rowspan='2'>

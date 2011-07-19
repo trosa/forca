@@ -4,6 +4,20 @@
     jQuery(document).ready(function(){jQuery('.profs_list').hide()});
 </script>
 
+{{if auth.has_membership('Admin'):}}
+    <div class="gradeC">
+        <b>Admin: </b>
+        <a href={{=URL('disc', 'edit', vars=dict(disc_id=disc.id))}}>
+            {{=IMG(_src=URL('static','pencil.png'))}}<b>Editar dados</b>
+        </a>
+        |
+        <a href={{=URL('disc', 'delete', vars=dict(disc_id=disc.id))}} 
+        onclick="return confirm('Tem certeza de que deseja excluir a disciplina?');">
+            {{=IMG(_src=URL('static','cross.png'))}}<b>Excluir disciplina</b>
+        </a>
+    </div>
+{{pass}}
+
 <table>
     <tr>
         <td>
