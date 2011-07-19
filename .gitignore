@@ -1,3 +1,11 @@
 /*
 !forca-setup.sh
 !/applications/
+!/applications/ForCA/
+!/applications/ForCA/*
+!/applications/ForCA/*/*
+!/applications/ForCA/*/*/*
+!/applications/ForCA/*/*/*/*
+!/applications/ForCA/*/*/*/*/*
+!/applications/ForCA/*/*/*/*/*/*
+!/applications/ForCA/*/*/*/*/*/*/*
