@@ -43,6 +43,13 @@
             {{pass}}
         {{else:}}
             <li><h3>Você ainda não postou nenhuma avaliação.</h3></li>
+            <a href={{=URL('prof','list')}}>ver professores</a>
+            |
+            <a href={{=URL('disc','list')}}>ver disciplinas</a>
+            |
+            <a href={{=URL('eval','filter')}}>pesquisar avaliações</a>
+            |
+            <a href={{=URL('default','faq')}}>dúvidas frequentes</a>
         {{pass}}
         
         {{evals = evals_favorited}}
@@ -51,8 +58,6 @@
             <div id="favorites">
             {{include "eval/list.html"}}
             </div>
-        {{else:}}
-            <li><h3>Você ainda não favoritou nenhuma avaliação.</h3></li><br>
         {{pass}}
     </ul>
 {{else:}}
