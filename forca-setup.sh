@@ -39,6 +39,7 @@ apt-get -y install postgresql
 apt-get -y install apache2
 apt-get -y install libapache2-mod-wsgi
 apt-get -y install python2.5-psycopg2
+apt-get -y install psycopg2
 apt-get -y install postfix
 apt-get -y install wget
 apt-get -y install python-matplotlib
