@@ -1,5 +1,5 @@
 @auth.requires_membership('Admin')
-def index():
+def logs():
     events = auth.db(auth.db.auth_event.id>0).select(orderby=~auth.db.auth_event.time_stamp)
     users = []
     logged = []
@@ -19,6 +19,19 @@ def index():
                 if not user.registration_key:
                     logged.append({'email': user.email, 'name': user.first_name, 'time': event.time_stamp})
 
+    return dict(users=users[:10], logged=logged[:20])
+
+@auth.requires_membership('Admin')
+def rankings():
+    alunos = db(Alunos.id>0).select().as_list()
+    aluno_numevals = {}
+    for aluno in alunos:
+        aluno_evals = db(Avaliacoes.aluno_id==aluno['id']).select().as_list()
+        aluno_numevals[aluno['full_name']] = len(aluno_evals)
+    return dict(aluno_numevals=aluno_numevals)
+
+@auth.requires_membership('Admin')
+def stats():
     evals = db(Avaliacoes.id>0).select().as_list()
     num_evals = len(evals)
 
@@ -49,4 +62,19 @@ def index():
                                                     evals_stats['D']['num'], evals_stats['D']['pct'],\
                                                     evals_stats['FF']['num'], evals_stats['FF']['pct'])
 
-    return dict(users=users[:10], logged=logged[:20], chart_url=chart_url)
+    return dict(chart_url=chart_url)
+
+@auth.requires_membership('Admin')
+def config():
+    config = db(Config.id>0).select().first()
+    form = SQLFORM(Config, config, showid=False, 
+            labels={
+                'allow_anonimo': 'Permitir avaliações anônimas:',
+                'closed_evals': 'Somente usuários logados podem ver avaliações:',
+                'blind_profs': 'Professores enxergam somente as próprias avaliações'
+                })
+    if form.accepts(request.vars, session):
+        session.flash = 'Configurações salvas com sucesso'
+        redirect(URL('admin', 'config'))
+    return dict(form=form)
+

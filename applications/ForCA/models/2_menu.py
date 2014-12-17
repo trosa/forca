@@ -24,4 +24,9 @@ response.menu = [
     ]
 
 if auth.has_membership('Admin'):
-    response.menu += [(T('Admin'), False, URL(request.application, 'admin', 'index'), [])]
+    response.menu += [(T('Admin'), False, False, [
+        [T('Logs de acesso'), False, URL(request.application, 'admin', 'logs'), []],
+        [T('Estatísticas'), False, URL(request.application, 'admin', 'stats'), []],
+        [T('Rankings'), False, URL(request.application, 'admin', 'rankings'), []],
+        [T('Configurações'), False, URL(request.application, 'admin', 'config'), []],
+        ])]

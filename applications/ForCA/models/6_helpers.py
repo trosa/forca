@@ -297,6 +297,7 @@ def refine_evals(raw_evals):
         eval['anonimo']          = raw_eval['anonimo']
         eval['timestamp_eval']   = raw_eval['timestamp_eval']
         eval['timestamp_reply']  = raw_eval['timestamp_reply']
+        eval['hidden']           = raw_eval['hidden']
         evals.append(eval)
     return evals
 

@@ -2,6 +2,24 @@ def index():
     profs = db().select(db.professores.ALL, orderby=db.professores.full_name)
     return dict(profs=profs)    
 
+@auth.requires_membership('Admin')
+def hide():
+    if request.wsgi.environ['REQUEST_METHOD'] == 'GET':
+        session.jump_back = request.env.http_referer
+    eval_id = request.vars['eval_id']
+    db(Avaliacoes.id==eval_id).update(hidden=True)
+    db.commit()
+    redirect(session.jump_back)
+
+@auth.requires_membership('Admin')
+def show():
+    if request.wsgi.environ['REQUEST_METHOD'] == 'GET':
+        session.jump_back = request.env.http_referer
+    eval_id = request.vars['eval_id']
+    db(Avaliacoes.id==eval_id).update(hidden=False)
+    db.commit()
+    redirect(session.jump_back)
+
 @auth.requires_login()
 def create():
     '''

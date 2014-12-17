@@ -399,3 +399,12 @@ div.gradeFF {
     padding: 0px;
     margin: 0px;
 }
+
+.transparent {
+        opacity: 0.5 !important;
+	filter:alpha(opacity=50) !important;
+	-moz-opacity:0.5 !important;
+	filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=50) !important;
+	-khtml-opacity: 0.5 !important;
+	-ms-filter: “progid:DXImageTransform.Microsoft.Alpha(Opacity=50)” !important;
+}

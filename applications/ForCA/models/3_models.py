@@ -61,6 +61,7 @@ Avaliacoes = db.define_table(
         Field('anonimo', 'boolean', required=True, default=False, writable=True, readable=True),
         Field('timestamp_eval', 'datetime', length=32, default=datetime.now(), readable=False),
         Field('timestamp_reply', 'datetime', length=32, readable=False),
+        Field('hidden', 'boolean', default=False, writable=False, readable=False),
         migrate='avaliacoes.table')
 
 db.avaliacoes.aluno_id.requires = [
@@ -119,3 +120,13 @@ db.favoritos.user_id.requires = [
     'favoritos.user_id',
     error_message = 'Voce já favoritou essa avaliação')
 ]
+
+Config = db.define_table(
+        'config',
+        Field('allow_anonimo', 'boolean', required=True, notnull=True, default=True),
+        Field('closed_evals', 'boolean', required=True, notnull=True, default=False),
+        Field('blind_profs', 'boolean', required=True, notnull=True, default=False),
+        migrate='config.table')
+
+if db(Config.id>0).count() < 1:
+    Config.insert(allow_anonimo=True, closed_evals=False, blind_profs=False)

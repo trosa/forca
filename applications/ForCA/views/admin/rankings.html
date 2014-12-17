@@ -1,0 +1,24 @@
+{{extend 'layout.html'}}
+
+{{=H1('Rankings')}}
+
+<div name="eval_ranking">
+    <h2>Quantidade de avaliações</h2>
+    <small>*Alunos que ainda não postaram avaliações são omitidos do ranking</small>
+    <table>
+        <tr>
+            <th>Aluno</th>
+            <th>Avaliações</th>
+        </tr>
+        {{for aluno in sorted(aluno_numevals, key=aluno_numevals.get, reverse=True):}}
+            {{if aluno_numevals[aluno] > 0:}}
+                <tr>
+                    <td>{{=aluno}}</td>
+                    <td>{{=aluno_numevals[aluno]}}</td>
+                </tr>
+            {{pass}}
+        {{pass}}
+    </table>
+</div>
+
+{{pass}}

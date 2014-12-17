@@ -20,7 +20,14 @@
         {{pass}}
         {{if eval['prof_blocked']: continue}}
         {{if i==per_page: break}}
+        {{if eval['hidden']:}}
+            {{if not auth.has_membership('Admin'): continue}}
+            {{if auth.has_membership('Admin'):}}
+                <div class="grade{{=eval['grade']}} transparent">
+            {{pass}}
+        {{else:}}
             <div class='grade{{=eval['grade']}}'>
+        {{pass}}
                 <table>
                     <tr>
                         <td rowspan='4'>
@@ -140,6 +147,17 @@
                                     {{=A(IMG(_src=URL('static', 'pencil.png'), _border=0, _alt=T('Editar avaliação'), _width=16, _height=16),
                                     _title=T('Editar avaliação'),
                                     _href=URL(request.application, 'eval', 'update', vars=dict(eval_id=eval['id'])))}}
+                                    {{if auth.has_membership('Admin'):}}
+                                        {{if not eval['hidden']:}}
+                                            {{=A(IMG(_src=URL('static', 'eye-minus.png'), _border=0, _alt=T('Esconder avaliação'), _width=16, _height=16),
+                                            _title=T('Esconder avaliação'),
+                                            _href=URL(request.application, 'eval', 'hide', vars=dict(eval_id=eval['id'])))}}
+                                        {{else:}}
+                                            {{=A(IMG(_src=URL('static', 'eye-plus.png'), _border=0, _alt=T('Mostrar avaliação'), _width=16, _height=16),
+                                            _title=T('Mostrar avaliação'),
+                                            _href=URL(request.application, 'eval', 'show', vars=dict(eval_id=eval['id'])))}}
+                                        {{pass}}
+                                    {{pass}}
                                 {{else:}}
                                     {{=IMG(_width=16, _height=16, _src=URL('static', 'cross_disabled.png'), _border=0, _class='cursored',
                                     _alt=T('Excluir avaliação'), _title=T('Você não pode excluir uma avaliação respondida'))}}
@@ -176,7 +194,6 @@
             {{pass}}
         </div>
         <br/>
-
 
     {{else:}}
         <br/>
